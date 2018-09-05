@@ -1,0 +1,62 @@
+Sub Future()
+
+Dim myXML As Object
+Set myXML = CreateObject("Microsoft.XMLHTTP")
+
+Dim myHTML As Object
+Set myHTML = CreateObject("HTMLFile")
+
+ReDim myArr(1 To 55, 1 To 15)
+
+With myXML
+    .Open "GET", "http://info512.taifex.com.tw/Future/FusaQuote_Norl.aspx?t=" & Timer, False
+    .send
+    myHTML.body.innerHTML = .responseText
+    Set myTable = myHTML.getElementByID("ctl00_ContentPlaceHolder1_uc_DgFusaQuote1_dgData")
+    i = 1
+    For Each myRow In myTable.Rows
+        j = 1
+        For Each myCell In myRow.Cells
+            myArr(i, j) = myCell.innerText
+            j = j + 1
+        Next
+        i = i + 1
+    Next
+End With
+
+Range("A5").Resize(55, 15).Value = myArr
+
+Set myXML = Nothing
+Erase myArr
+End Sub
+Sub Opt()
+
+Dim myXML As Object
+Set myXML = CreateObject("Microsoft.XMLHTTP")
+
+Dim myHTML As Object
+Set myHTML = CreateObject("HTMLFile")
+
+ReDim myArr(1 To 30, 1 To 13)
+
+With myXML
+    .Open "GET", "http://info512.taifex.com.tw/Future/OptQuote_Norl.aspx?t=" & Timer, False
+    .send
+    myHTML.body.innerHTML = .responseText
+    Set myTable = myHTML.getElementByID("ctl00_ContentPlaceHolder1_uc_DgOptQuote1_UpdatePanel1").getElementsByTagName("table")(0)
+    i = 1
+    For Each myRow In myTable.Rows
+        j = 1
+        For Each myCell In myRow.Cells
+            myArr(i, j) = myCell.innerText
+            j = j + 1
+        Next
+        i = i + 1
+    Next
+End With
+
+Range("R5").Resize(30, 13).Value = myArr
+
+Set myXML = Nothing
+Erase myArr
+End Sub
