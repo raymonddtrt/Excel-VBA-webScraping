@@ -1,0 +1,45 @@
+Sub 集保()
+Sheets("籌碼分布").Select
+
+Dim myXML As Object
+Set myXML = CreateObject("WinHttp.WinHttpRequest.5.1")
+
+Dim myHTML As Object
+Set myHTML = CreateObject("HTMLFile")
+
+stockno = 2330
+
+With myXML
+    .Open "POST", "https://www.tdcc.com.tw/smWeb/QryStockAjax.do", False
+    .setRequestHeader "content-type", "application/x-www-form-urlencoded;charset=UTF-8"
+    .send "REQ_OPR=qrySelScaDates"
+    myText = .responseText
+    myText1 = Split(myText, ",")
+    myTextLength = UBound(myText1) + 1
+    j = 1
+    
+    For i = 1 To 17
+        Cells(j, "A") = Replace(myText1(i), Chr(34), "")
+        
+        .Open "POST", "https://www.tdcc.com.tw/smWeb/QryStockAjax.do", False
+        .setRequestHeader "content-type", "application/x-www-form-urlencoded"
+        .send "scaDates=" & Cells(j, "A") & "&scaDate=" & Cells(j, "A") & "&SqlMethod=StockNo&StockNo=" & stockno & "&radioStockNo=" & stockno & "&StockName=&REQ_OPR=SELECT&clkStockNo=2330&clkStockName="
+        myHTML.body.innerHTML = .responseText
+        Set myTable = myHTML.getElementsByTagName("table")(7)
+        iRow = j + 1
+        For Each myRow In myTable.Rows
+            iCol = 1
+            For Each myCell In myRow.Cells
+                Cells(iRow, iCol) = myCell.innerText
+                iCol = iCol + 1
+            Next
+            iRow = iRow + 1
+        Next
+        iRow = iRow + 4
+        j = j + 20
+    Next
+End With
+
+Set myXML = Nothing
+Sheets("簡單分析").Select
+End Sub
