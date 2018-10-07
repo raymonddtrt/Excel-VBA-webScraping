@@ -1,0 +1,13 @@
+Function encode(myString)
+    Set oDom = CreateObject("HTMLFILE")
+    Set oWindow = oDom.parentWindow
+    oDom.Write "<Script></Script>"
+    encode = oWindow.encodeURIComponent(myString)
+End Function
+
+Function decode(myString)
+    Set oDom = CreateObject("HTMLFILE")
+    Set oWindow = oDom.parentWindow
+    oDom.Write "<Script></Script>"
+    encode = oWindow.decodeURIComponent(myString)
+End Function
